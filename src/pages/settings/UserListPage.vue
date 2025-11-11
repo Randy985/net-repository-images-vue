@@ -122,6 +122,16 @@
                             </template>
                         </v-tooltip>
 
+                        <v-tooltip text="API Key" location="top">
+                            <template #activator="{ props }">
+                                <v-btn v-bind="props" icon density="comfortable" variant="tonal" color="blue-darken-3"
+                                    size="34" @click="openApiKeyDialog(item._raw)">
+                                    <v-icon size="20">mdi-key</v-icon>
+                                </v-btn>
+                            </template>
+                        </v-tooltip>
+
+
                         <v-tooltip text="Eliminar" location="top">
                             <template #activator="{ props }">
                                 <v-btn v-bind="props" icon density="comfortable" variant="tonal" color="red-darken-3"
@@ -141,6 +151,9 @@
         <UserFormDialog v-model:isOpen="dialog" :roles="roles" :user="editingUser" @save="createUser"
             @updateUser="updateUser" />
 
+        <ApiKeyDialog v-model:isOpen="apiKeyDialog" :user="selectedUser" @regenerate="generateApiKey" />
+
+
     </v-container>
 </template>
 
@@ -151,6 +164,7 @@ import UserFormDialog from '@/components/users/UserFormDialog.vue'
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
 import Swal from 'sweetalert2'
+import ApiKeyDialog from "@/components/users/ApiKeyDialog.vue"
 
 dayjs.locale('es')
 
@@ -308,6 +322,47 @@ onMounted(() => {
     loadUsers()
     loadRoles()
 })
+
+const apiKeyDialog = ref(false)
+const selectedUser = ref<any | null>(null)
+
+const openApiKeyDialog = (user: any) => {
+    selectedUser.value = user
+    apiKeyDialog.value = true
+}
+
+const generateApiKey = async (userId: number) => {
+    try {
+        const res = await api.post("/api-keys")
+        const key = res.data.key
+
+        await Swal.fire({
+            title: 'API Key generada',
+            icon: 'success',
+            html: `
+                <p>Guarda esta clave en un lugar seguro:</p>
+                <p style="font-size:1.1rem;font-weight:bold;background:#eee;padding:6px 10px;border-radius:6px;">
+                    ${key}
+                </p>
+                <p><small>No podrás volver a verla.</small></p>
+            `,
+            confirmButtonText: 'Entendido',
+            customClass: {
+                confirmButton: 'bg-blue text-white'
+            }
+        })
+    } catch {
+        await Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo generar la API Key',
+            customClass: {
+                confirmButton: 'bg-red text-white'
+            }
+        })
+    }
+}
+
 </script>
 
 <style scoped>

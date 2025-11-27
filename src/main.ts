@@ -18,10 +18,11 @@ import {
   faChartLine,
   faGear,
   faRightFromBracket,
-  faLink
+  faLink,
+  faFolderOpen
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faUser, faFile, faUsers, faChartLine, faGear, faRightFromBracket, faLink);
+library.add(faUser, faFile, faUsers, faChartLine, faGear, faRightFromBracket, faLink, faFolderOpen);
 
 const app = createApp(App);
 const pinia = createPinia();

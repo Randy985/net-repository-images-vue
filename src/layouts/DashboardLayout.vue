@@ -95,6 +95,7 @@ const navItems = [
   { to: "/dashboard/suppliers", label: "Proveedores", icon: "users" },
   { to: "/dashboard/audit", label: "Auditoría", icon: "chart-line" },
   // { to: "/dashboard/tokens", label: "Tokens", icon: "link" }
+  { to: "/dashboard/repository", label: "Repo Manual", icon: "folder-open" }
 ];
 
 </script>

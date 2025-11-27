@@ -12,25 +12,14 @@
           Si la pierdes, puedes regenerarla.
         </div>
 
-        <v-alert
-          v-if="hasKey"
-          type="success"
-          variant="tonal"
-          class="mb-4"
-          title="API Key activa"
-        >
+        <v-alert v-if="hasKey" type="success" variant="tonal" class="mb-4" title="API Key activa">
           Esta cuenta tiene una API Key activa.
         </v-alert>
 
-        <v-alert
-          v-else
-          type="warning"
-          variant="tonal"
-          class="mb-4"
-          title="Sin API Key"
-        >
-          Esta cuenta no tiene una API Key.
+        <v-alert v-else type="warning" variant="tonal" class="mb-4 text-body-2" title="API Key no visible">
+          La API Key no puede mostrarse. Puedes generar una nueva.
         </v-alert>
+
       </v-card-text>
       <v-card-actions class="px-6 pb-4">
         <v-spacer />

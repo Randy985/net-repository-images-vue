@@ -184,7 +184,7 @@ const suppliers = ref<Supplier[]>([])
 const editingDoc = ref<any | null>(null)
 
 const headers = [
-  { title: "ID", key: "n" },
+  { title: "Proveedor ID", key: "supplierId" },
   { title: "Archivo", key: "originalFileName" },
   { title: "Descripción", key: "description" },
   { title: "Proveedor", key: "supplierName" },
@@ -205,7 +205,7 @@ function norm(val: unknown): string {
 const tableItems = computed(() =>
   documents.value.map((d, i) => ({
     _raw: d,
-    n: i + 1,
+    supplierId: d.supplierId,
     id: d.id,
     originalFileName: d.originalFileName,
     description: d.description,
@@ -217,7 +217,6 @@ const tableItems = computed(() =>
     fileType: d.fileType
   })),
 )
-
 
 const filteredItems = computed(() => {
   const q = norm(search.value)

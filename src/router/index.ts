@@ -36,6 +36,10 @@ const routes = [
         path: "settings",
         component: () => import("@/pages/settings/UserListPage.vue"),
         meta: { requiresAuth: true, roles: [1, 2] }
+      },
+      {
+        path: "repository",
+        component: () => import("@/pages/repository/RepositoryListPage.vue")
       }
     ],
   },

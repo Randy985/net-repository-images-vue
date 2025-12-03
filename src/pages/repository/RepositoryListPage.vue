@@ -278,7 +278,6 @@ const handleSave = async ({ mode, data, id, file }: any) => {
     });
 };
 
-
 const deleteItem = async (item: any) => {
     const result = await Swal.fire({
         title: "¿Eliminar registro?",

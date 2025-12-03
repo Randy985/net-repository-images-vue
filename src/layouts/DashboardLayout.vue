@@ -91,11 +91,11 @@ const route = useRoute();
 
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: "chart-line" },
-  { to: "/dashboard/documents", label: "Documentos", icon: "file" },
-  { to: "/dashboard/suppliers", label: "Proveedores", icon: "users" },
-  { to: "/dashboard/audit", label: "Auditoría", icon: "chart-line" },
+  // { to: "/dashboard/documents", label: "Documentos", icon: "file" },
+  // { to: "/dashboard/suppliers", label: "Proveedores", icon: "users" },
+  // { to: "/dashboard/audit", label: "Auditoría", icon: "chart-line" },
   // { to: "/dashboard/tokens", label: "Tokens", icon: "link" }
-  { to: "/dashboard/repository", label: "Repo Manual", icon: "folder-open" }
+  { to: "/dashboard/repository", label: "Repositorio", icon: "folder-open" }
 ];
 
 </script>

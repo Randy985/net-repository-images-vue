@@ -58,7 +58,7 @@
                 <template #header.description>
                     <div class="th-left">
                         <v-icon size="18" class="me-1">mdi-file-document</v-icon>
-                        <strong>Tipo</strong>
+                        <strong>Descripción</strong>
                     </div>
                 </template>
 
@@ -76,7 +76,7 @@
                     </div>
                 </template>
 
-                <template #header.uploadedByUser>
+                <template #header.documentUser>
                     <div class="th-left">
                         <v-icon size="18" class="me-1">mdi-account</v-icon>
                         <strong>Usuario</strong>
@@ -103,8 +103,8 @@
                 </template>
 
                 <!-- ===== USERNAME ===== -->
-                <template #item.uploadedByUser="{ item }">
-                    {{ item._raw.uploadedByUser?.username ?? "—" }}
+                <template #item.documentUser="{ item }">
+                    {{ item._raw.documentUser || "—" }}
                 </template>
 
                 <!-- ===== FILE / URL ===== -->
@@ -187,10 +187,10 @@ const headers = [
     { title: "Número Doc", key: "numeroDoc" },
     { title: "Proveedor ID", key: "supplierId" },
     { title: "Nombre Proveedor", key: "nameSupplier" },
-    { title: "Tipo", key: "description" },
+    { title: "Usuario", key: "documentUser" },
+    { title: "Descripción", key: "description" },
     { title: "Fecha", key: "docDate" },
     { title: "Hora", key: "docTime" },
-    { title: "Usuario", key: "uploadedByUser" },
     { title: "Archivo / URL", key: "filePath" },
     { title: "Acciones", key: "actions", sortable: false }
 ];
@@ -209,7 +209,7 @@ const filteredItems = computed(() => {
         .filter(r =>
             norm(r.numeroDoc).includes(q) ||
             norm(r.nameSupplier).includes(q) ||
-            norm(r.usuario).includes(q) ||
+            norm(r.documentUser).includes(q) ||
             norm(r.description).includes(q)
         )
         .map(i => ({ _raw: i, ...i }));

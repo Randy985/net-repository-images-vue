@@ -26,21 +26,24 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url?.includes("/auth/refresh")
+    ) {
+
       originalRequest._retry = true;
       try {
-        // 🔑 ya no mandamos body ni headers, solo la cookie
         const { data } = await api.post("/auth/refresh");
 
-        // tu backend devuelve AuthResponse → ajusta aquí
-        _setToken(data.accessToken); 
+        _setToken(data.accessToken);
 
         return api(originalRequest);
       } catch (err) {
-        console.error("No se pudo refrescar la sesión", err);
+        _setToken("");
+        return Promise.reject(err);
       }
     }
-
     return Promise.reject(error);
   }
 );

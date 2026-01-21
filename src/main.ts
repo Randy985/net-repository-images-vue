@@ -19,10 +19,11 @@ import {
   faGear,
   faRightFromBracket,
   faLink,
-  faFolderOpen
+  faFolderOpen,
+  faFilter
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faUser, faFile, faUsers, faChartLine, faGear, faRightFromBracket, faLink, faFolderOpen);
+library.add(faUser, faFile, faUsers, faChartLine, faGear, faRightFromBracket, faLink, faFolderOpen, faFilter);
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -38,23 +39,6 @@ const auth = useAuthStore();
 bindAccessToken(
   () => auth.accessToken || "",
   (token: string) => { auth.accessToken = token; }
-);
-
-
-api.interceptors.response.use(
-  (res) => res,
-  async (err) => {
-    if (err.response?.status === 401 && !err.config._retry) {
-      err.config._retry = true;
-      try {
-        await auth.refresh();
-        return api(err.config);
-      } catch {
-        await auth.logout();
-      }
-    }
-    return Promise.reject(err);
-  }
 );
 
 app.mount("#app");

@@ -59,7 +59,7 @@ export const useAuthStore = defineStore("auth", {
     async logout() {
       try {
         await api.post("/auth/logout", { refreshToken: "" });
-      } catch {}
+      } catch { }
       this.accessToken = "";
       this.user = null;
       localStorage.removeItem("accessToken");
@@ -77,5 +77,12 @@ export const useAuthStore = defineStore("auth", {
       localStorage.setItem("accessToken", this.accessToken);
       localStorage.setItem("user", JSON.stringify(this.user));
     },
+
+    isTokenExpired() {
+      if (!this.accessToken) return true;
+      const payload = JSON.parse(atob(this.accessToken.split(".")[1]));
+      return Date.now() >= payload.exp * 1000;
+    },
+
   },
 });

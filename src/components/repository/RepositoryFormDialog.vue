@@ -1,9 +1,12 @@
 <template>
     <v-dialog v-model="internalOpen" max-width="900">
         <v-card rounded="xl">
-            <v-card-title class="text-h6 py-4 px-6">
-                {{ props.editing ? "Editar Registro" : "Nuevo Registro" }}
-            </v-card-title>
+          <v-card-title class="py-4 px-6">
+    <span class="text-h6 font-weight-bold">
+        {{ props.editing ? "Editar Registro" : "Nuevo Registro" }}
+    </span>
+</v-card-title>
+
 
             <v-divider />
 
@@ -23,6 +26,9 @@
 
                             <v-text-field v-model="form.nameSupplier" label="Nombre del Proveedor" variant="outlined"
                                 :error="!!errors.nameSupplier" :error-messages="errors.nameSupplier" class="mb-3" />
+
+                            <v-text-field v-model="form.documentUser" label="Usuario" variant="outlined"
+                                :error="!!errors.documentUser" :error-messages="errors.documentUser" class="mb-3" />
 
                             <v-text-field v-model="form.description" label="Descripción" variant="outlined"
                                 :error="!!errors.description" :error-messages="errors.description" class="mb-3" />
@@ -110,6 +116,14 @@ const internalOpen = ref(false);
 
 watch(() => props.isOpen, val => internalOpen.value = val);
 watch(internalOpen, val => emit("update:isOpen", val));
+watch(
+    () => internalOpen.value,
+    (open) => {
+        if (open && !props.editing) {
+            resetForm();
+        }
+    }
+);
 
 /* --- FORM DATA --- */
 
@@ -119,6 +133,7 @@ const form = ref({
     numeroDoc: "",
     supplierId: "",
     nameSupplier: "",
+    documentUser: "",
     description: "",
     docDate: now.toISOString().slice(0, 10),
     docTime: now.toTimeString().slice(0, 5),
@@ -131,6 +146,7 @@ const errors = ref({
     numeroDoc: "",
     supplierId: "",
     nameSupplier: "",
+    documentUser: "",
     description: "",
 });
 
@@ -140,6 +156,7 @@ const resetForm = () => {
         numeroDoc: "",
         supplierId: "",
         nameSupplier: "",
+        documentUser: "",
         description: "",
         docDate: now.toISOString().slice(0, 10),
         docTime: now.toTimeString().slice(0, 5),
@@ -160,6 +177,7 @@ watch(() => props.editing, val => {
         numeroDoc: val.numeroDoc,
         supplierId: val.supplierId,
         nameSupplier: val.nameSupplier,
+        documentUser: val.documentUser,
         description: val.description,
         docDate: val.docDate,
         docTime: val.docTime,
@@ -251,19 +269,24 @@ const submit = () => {
         numeroDoc: "",
         supplierId: "",
         nameSupplier: "",
+        documentUser: "",
         description: "",
     };
 
     let bad = false;
 
-    if (!form.value.numeroDoc || isNaN(Number(form.value.numeroDoc)))
-        errors.value.numeroDoc = "Ingrese un número válido", bad = true;
+    if (!form.value.numeroDoc)
+        errors.value.numeroDoc = "Ingrese un valor válido", bad = true;
 
-    if (!form.value.supplierId || isNaN(Number(form.value.supplierId)))
+
+    if (!form.value.supplierId)
         errors.value.supplierId = "Ingrese un ID válido", bad = true;
 
     if (!form.value.nameSupplier)
         errors.value.nameSupplier = "Ingrese nombre del proveedor", bad = true;
+
+    if (!form.value.documentUser)
+        errors.value.documentUser = "Ingrese usuario del documento", bad = true;
 
     if (!form.value.description)
         errors.value.description = "Ingrese una descripción", bad = true;
@@ -275,8 +298,6 @@ const submit = () => {
         id: props.editing?.id || null,
         data: {
             ...form.value,
-            numeroDoc: Number(form.value.numeroDoc),
-            supplierId: Number(form.value.supplierId)
         },
         file: file.value
     });

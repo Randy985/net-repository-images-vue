@@ -64,9 +64,6 @@
                 hide-details
                 color="deep-purple-accent-4"
               />
-              <RouterLink to="/forgot-password" class="text-deep-purple-accent-4 text-caption">
-                ¿Olvidaste tu contraseña?
-              </RouterLink>
             </div>
 
             <v-btn

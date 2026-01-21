@@ -40,6 +40,10 @@ const routes = [
       {
         path: "repository",
         component: () => import("@/pages/repository/RepositoryListPage.vue")
+      },
+      {
+        path: "repository-query",
+        component: () => import("@/pages/repository/RepositoryQueryPage.vue")
       }
     ],
   },
@@ -53,8 +57,19 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const auth = useAuthStore();
+
+  if (auth.accessToken && auth.isTokenExpired()) {
+    auth.accessToken = "";
+    auth.user = null;
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
+    alert("La sesión ha expirado");
+    return "/login";
+  }
+
   if (to.meta.requiresAuth && !auth.accessToken) return "/login";
   if (to.meta.guest && auth.accessToken) return "/dashboard";
 });
+
 
 export default router;

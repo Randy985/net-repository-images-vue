@@ -1,0 +1,220 @@
+<template>
+    <v-container class="mx-auto" style="max-width: 1400px;">
+        <div class="mb-6">
+            <h1 class="text-h5 font-weight-bold">Consulta y Filtros</h1>
+            <div class="text-caption text-medium-emphasis">
+                Búsqueda avanzada del repositorio
+            </div>
+        </div>
+
+        <!-- FILTROS -->
+        <v-card rounded="xl" elevation="1" class="pa-6 mb-4">
+            <v-row dense>
+                <!-- FILA 1: INPUTS -->
+                <v-col cols="12" md="4">
+                    <v-autocomplete v-model="filters.numeroDocs" :items="options.numeroDocs" label="Número de documento"
+                        multiple chips closable-chips variant="outlined" density="compact" autocomplete="off"
+                        clearable />
+                </v-col>
+
+                <v-col cols="12" md="4">
+                    <v-autocomplete v-model="filters.supplierIds" :items="options.suppliers" item-title="nameSupplier"
+                        item-value="supplierId" label="Proveedor" multiple chips closable-chips variant="outlined"
+                        density="compact" autocomplete="off" clearable />
+                </v-col>
+
+                <v-col cols="12" md="4">
+                    <v-autocomplete v-model="filters.uploadedByUsers" :items="options.users" label="Usuario" multiple
+                        chips closable-chips variant="outlined" density="compact" autocomplete="off" clearable />
+                </v-col>
+
+                <!-- FILA 2: FECHAS + BOTONES -->
+                <v-col cols="12" md="6">
+                    <v-row dense>
+                        <v-col cols="6">
+                            <v-text-field v-model="filters.dateFrom" type="date" label="Desde" variant="outlined"
+                                density="compact" />
+                        </v-col>
+                        <v-col cols="6">
+                            <v-text-field v-model="filters.dateTo" type="date" label="Hasta" variant="outlined"
+                                density="compact" />
+                        </v-col>
+                    </v-row>
+                </v-col>
+
+                <v-col cols="12" md="6" class="d-flex justify-end align-end gap-2">
+                    <v-btn variant="outlined" size="small" @click="refresh">Refresh</v-btn>
+                    <v-btn color="primary" size="small" prepend-icon="mdi-filter" @click="search">Filtrar</v-btn>
+                    <v-btn variant="tonal" size="small" prepend-icon="mdi-file-excel" :disabled="rows.length === 0"
+                        @click="exportExcel">Excel</v-btn>
+                    <v-btn variant="tonal" size="small" prepend-icon="mdi-file-pdf-box" :disabled="rows.length === 0"
+                        @click="exportPdf">PDF</v-btn>
+                </v-col>
+            </v-row>
+
+        </v-card>
+
+        <!-- TABLA -->
+        <v-card rounded="xl" elevation="1">
+            <v-data-table class="doc-table" :headers="headers" :items="rows" density="comfortable" items-per-page="10">
+                <template #header.numeroDoc>
+                    <div class="th-left">
+                        <v-icon size="18" class="me-1">mdi-numeric</v-icon>
+                        <strong>Número Doc</strong>
+                    </div>
+                </template>
+
+                <template #header.supplierId>
+                    <div class="th-left">
+                        <v-icon size="18" class="me-1">mdi-truck</v-icon>
+                        <strong>Proveedor ID</strong>
+                    </div>
+                </template>
+
+                <template #header.nameSupplier>
+                    <div class="th-left">
+                        <v-icon size="18" class="me-1">mdi-store</v-icon>
+                        <strong>Proveedor</strong>
+                    </div>
+                </template>
+
+                <template #header.documentUser>
+                    <div class="th-left">
+                        <v-icon size="18" class="me-1">mdi-account</v-icon>
+                        <strong>Usuario</strong>
+                    </div>
+                </template>
+
+                <template #header.description>
+                    <div class="th-left">
+                        <v-icon size="18" class="me-1">mdi-file-document</v-icon>
+                        <strong>Descripción</strong>
+                    </div>
+                </template>
+
+                <template #header.docDate>
+                    <div class="th-left">
+                        <v-icon size="18" class="me-1">mdi-calendar</v-icon>
+                        <strong>Fecha</strong>
+                    </div>
+                </template>
+
+                <template #header.docTime>
+                    <div class="th-left">
+                        <v-icon size="18" class="me-1">mdi-clock-time-four</v-icon>
+                        <strong>Hora</strong>
+                    </div>
+                </template>
+
+                <template #no-data>
+                    <div class="pa-6 text-medium-emphasis">
+                        Presiona “Filtrar” para mostrar resultados
+                    </div>
+                </template>
+            </v-data-table>
+        </v-card>
+    </v-container>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
+import api from "@/api/http";
+
+const filters = ref({
+    numeroDocs: [],
+    supplierIds: [],
+    uploadedByUsers: [],
+    dateFrom: null,
+    dateTo: null,
+    page: 1,
+    pageSize: 10
+});
+
+
+const options = ref({
+    numeroDocs: [] as string[],
+    suppliers: [] as { supplierId: string; nameSupplier: string }[],
+    users: [] as string[]
+});
+
+const rows = ref<any[]>([]);
+
+const headers = [
+    { title: "Número Doc", key: "numeroDoc" },
+    { title: "Proveedor ID", key: "supplierId" },
+    { title: "Proveedor", key: "nameSupplier" },
+    { title: "Usuario", key: "documentUser" },
+    { title: "Descripción", key: "description" },
+    { title: "Fecha", key: "docDate" },
+    { title: "Hora", key: "docTime" }
+];
+
+const loadOptions = async () => {
+    const [docs, suppliers, users] = await Promise.all([
+        api.get("/repository-documents-query/options/numero-doc"),
+        api.get("/repository-documents-query/options/suppliers"),
+        api.get("/repository-documents-query/options/users")
+    ]);
+
+    options.value.numeroDocs = docs.data;
+    options.value.suppliers = suppliers.data;
+    options.value.users = users.data;
+};
+
+const search = async () => {
+    const res = await api.post("/repository-documents-query/search", filters.value);
+    rows.value = res.data.data;
+};
+
+const refresh = () => {
+    filters.value.numeroDocs = [];
+    filters.value.supplierIds = [];
+    filters.value.uploadedByUsers = [];
+    filters.value.dateFrom = null;
+    filters.value.dateTo = null;
+
+    rows.value = [];
+};
+
+const download = (blob: Blob, name: string) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(url);
+};
+
+const exportExcel = async () => {
+    const res = await api.post(
+        "/repository-documents-query/export/excel",
+        filters.value,
+        { responseType: "blob" }
+    );
+    download(res.data, "Repositorio.xlsx");
+};
+
+const exportPdf = async () => {
+    const res = await api.post(
+        "/repository-documents-query/export/pdf",
+        filters.value,
+        { responseType: "blob" }
+    );
+    download(res.data, "Repositorio.pdf");
+};
+
+onMounted(loadOptions);
+</script>
+
+<style scoped>
+.doc-table :deep(th) {
+    font-weight: 700;
+}
+
+.th-left {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-weight: 700;
+}
+</style>

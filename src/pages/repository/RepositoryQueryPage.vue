@@ -42,21 +42,35 @@
                     </v-row>
                 </v-col>
 
-                <v-col cols="12" md="6" class="d-flex justify-end align-end gap-2">
-                    <v-btn variant="outlined" size="small" @click="refresh">Refresh</v-btn>
-                    <v-btn color="primary" size="small" prepend-icon="mdi-filter" @click="search">Filtrar</v-btn>
-                    <v-btn variant="tonal" size="small" prepend-icon="mdi-file-excel" :disabled="rows.length === 0"
-                        @click="exportExcel">Excel</v-btn>
-                    <v-btn variant="tonal" size="small" prepend-icon="mdi-file-pdf-box" :disabled="rows.length === 0"
-                        @click="exportPdf">PDF</v-btn>
+                <v-col cols="12" md="6" class="d-flex justify-end align-end gap-3">
+                    <v-btn variant="outlined" size="small" class="me-1" @click="refresh">
+                        Refresh
+                    </v-btn>
+
+                    <v-btn color="primary" size="small" prepend-icon="mdi-filter" class="me-1" @click="search">
+                        Filtrar
+                    </v-btn>
+
+                    <v-btn color="success" variant="tonal" size="small" prepend-icon="mdi-file-excel" class="me-1"
+                        :disabled="rows.length === 0" @click="exportExcel">
+                        Excel
+                    </v-btn>
+
+                    <v-btn color="red-lighten-1" variant="tonal" size="small" prepend-icon="mdi-file-pdf-box"
+                        :disabled="rows.length === 0" @click="exportPdf">
+                        PDF
+                    </v-btn>
                 </v-col>
             </v-row>
-
         </v-card>
 
         <!-- TABLA -->
         <v-card rounded="xl" elevation="1">
-            <v-data-table class="doc-table" :headers="headers" :items="rows" density="comfortable" items-per-page="10">
+            <v-data-table-server class="doc-table" :headers="headers" :items="rows" density="comfortable"
+                v-model:page="filters.page" v-model:items-per-page="filters.pageSize"
+                :items-per-page-options="[10, 25, 50, 100]" :items-length="totalItems" @update:page="fetchData"
+                @update:items-per-page="fetchData">
+
                 <template #header.numeroDoc>
                     <div class="th-left">
                         <v-icon size="18" class="me-1">mdi-numeric</v-icon>
@@ -111,7 +125,7 @@
                         Presiona “Filtrar” para mostrar resultados
                     </div>
                 </template>
-            </v-data-table>
+            </v-data-table-server>
         </v-card>
     </v-container>
 </template>
@@ -138,6 +152,7 @@ const options = ref({
 });
 
 const rows = ref<any[]>([]);
+const totalItems = ref(0);
 
 const headers = [
     { title: "Número Doc", key: "numeroDoc" },
@@ -162,8 +177,14 @@ const loadOptions = async () => {
 };
 
 const search = async () => {
+    filters.value.page = 1;
+    await fetchData();
+};
+
+const fetchData = async () => {
     const res = await api.post("/repository-documents-query/search", filters.value);
     rows.value = res.data.data;
+    totalItems.value = res.data.total;
 };
 
 const refresh = () => {

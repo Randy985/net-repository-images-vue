@@ -19,27 +19,27 @@
                         <v-form @submit.prevent="submit">
 
                             <v-text-field v-model="form.numeroDoc" label="Número de Documento" variant="outlined"
-                                :error="!!errors.numeroDoc" :error-messages="errors.numeroDoc" class="mb-3" />
+                                :error="!!errors.numeroDoc" :error-messages="errors.numeroDoc" :readonly="!!props.editing" class="mb-3" />
 
                             <v-text-field v-model="form.supplierId" label="Proveedor ID" variant="outlined"
-                                :error="!!errors.supplierId" :error-messages="errors.supplierId" class="mb-3" />
+                                :error="!!errors.supplierId" :error-messages="errors.supplierId" :readonly="!!props.editing" class="mb-3" />
 
                             <v-text-field v-model="form.nameSupplier" label="Nombre del Proveedor" variant="outlined"
-                                :error="!!errors.nameSupplier" :error-messages="errors.nameSupplier" class="mb-3" />
+                                :error="!!errors.nameSupplier" :error-messages="errors.nameSupplier" :readonly="!!props.editing" class="mb-3" />
 
                             <v-text-field v-model="form.documentUser" label="Usuario" variant="outlined"
-                                :error="!!errors.documentUser" :error-messages="errors.documentUser" class="mb-3" />
+                                :error="!!errors.documentUser" :error-messages="errors.documentUser" :readonly="!!props.editing" class="mb-3" />
 
                             <v-text-field v-model="form.description" label="Descripción" variant="outlined"
-                                :error="!!errors.description" :error-messages="errors.description" class="mb-3" />
+                                :error="!!errors.description" :error-messages="errors.description" :readonly="!!props.editing" class="mb-3" />
 
                             <v-row>
                                 <v-col>
-                                    <v-text-field type="date" v-model="form.docDate" label="Fecha" variant="outlined" />
+                                    <v-text-field type="date" v-model="form.docDate" label="Fecha" :readonly="!!props.editing" variant="outlined" />
                                 </v-col>
 
                                 <v-col>
-                                    <v-text-field v-model="form.docTime" label="Hora" placeholder="HH:mm"
+                                    <v-text-field v-model="form.docTime" label="Hora" placeholder="HH:mm" :readonly="!!props.editing"
                                         variant="outlined" />
                                 </v-col>
                             </v-row>

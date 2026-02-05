@@ -10,14 +10,14 @@
                 </div>
             </div>
 
-            <div class="d-flex align-center" style="max-width:500px; width:100%;">
+            <div class="d-flex align-center" style="max-width:300px; width:100%;">
+                <!-- <v-btn color="primary" rounded="xl" prepend-icon="mdi-file-plus" @click="openNew">
+                    Nuevo Registro
+                </v-btn> -->
+
                 <v-text-field v-model="search" variant="solo" density="compact" rounded="xl" hide-details clearable
                     prepend-inner-icon="mdi-magnify" placeholder="Buscar por proveedor, usuario o descripción…"
                     class="flex-grow-1 me-2" />
-
-                <v-btn color="primary" rounded="xl" prepend-icon="mdi-file-plus" @click="openNew">
-                    Nuevo Registro
-                </v-btn>
             </div>
         </div>
 

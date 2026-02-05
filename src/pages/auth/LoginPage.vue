@@ -80,7 +80,7 @@
             </v-btn>
           </v-form>
 
-          <div class="text-center mt-2">
+          <!-- <div class="text-center mt-2">
             <span class="text-body-2">¿No tienes cuenta?</span>
             <RouterLink
               to="/register"
@@ -88,7 +88,7 @@
             >
               Regístrate
             </RouterLink>
-          </div>
+          </div> -->
         </div>
       </v-fade-transition>
     </div>

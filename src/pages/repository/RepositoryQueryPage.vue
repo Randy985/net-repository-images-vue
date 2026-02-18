@@ -28,6 +28,13 @@
                         chips closable-chips variant="outlined" density="compact" autocomplete="off" clearable />
                 </v-col>
 
+                <v-col cols="12" md="4">
+                    <v-autocomplete v-model="filters.noProformaFacturas" :items="options.noProformaFacturas"
+                        label="No Proforma / Factura" multiple chips closable-chips variant="outlined" density="compact" autocomplete="off"
+                        clearable />
+
+                </v-col>
+
                 <!-- FILA 2: FECHAS + BOTONES -->
                 <v-col cols="12" md="6">
                     <v-row dense>
@@ -42,7 +49,31 @@
                     </v-row>
                 </v-col>
 
-                <v-col cols="12" md="6" class="d-flex justify-end align-end gap-3">
+                <v-col cols="12">
+                    <v-row dense>
+                        <v-col cols="12" md="3">
+                            <v-text-field v-model="filters.fechaProformaFrom" type="date" label="Proforma Desde"
+                                variant="outlined" density="compact" />
+                        </v-col>
+
+                        <v-col cols="12" md="3">
+                            <v-text-field v-model="filters.fechaProformaTo" type="date" label="Proforma Hasta"
+                                variant="outlined" density="compact" />
+                        </v-col>
+
+                        <v-col cols="12" md="3">
+                            <v-text-field v-model="filters.fechaCorreoFrom" type="date" label="Correo Desde"
+                                variant="outlined" density="compact" />
+                        </v-col>
+
+                        <v-col cols="12" md="3">
+                            <v-text-field v-model="filters.fechaCorreoTo" type="date" label="Correo Hasta"
+                                variant="outlined" density="compact" />
+                        </v-col>
+                    </v-row>
+                </v-col>
+
+                <v-col cols="12" class="d-flex justify-end align-center gap-3">
                     <v-btn variant="outlined" size="small" class="me-1" @click="refresh">
                         Refresh
                     </v-btn>
@@ -138,6 +169,11 @@ const filters = ref({
     numeroDocs: [],
     supplierIds: [],
     uploadedByUsers: [],
+    noProformaFacturas: [],
+    fechaProformaFrom: null,
+    fechaProformaTo: null,
+    fechaCorreoFrom: null,
+    fechaCorreoTo: null,
     dateFrom: null,
     dateTo: null,
     page: 1,
@@ -148,7 +184,8 @@ const filters = ref({
 const options = ref({
     numeroDocs: [] as string[],
     suppliers: [] as { supplierId: string; nameSupplier: string }[],
-    users: [] as string[]
+    users: [] as string[],
+    noProformaFacturas: [] as string[],
 });
 
 const rows = ref<any[]>([]);
@@ -161,19 +198,24 @@ const headers = [
     { title: "Usuario", key: "documentUser" },
     { title: "Descripción", key: "description" },
     { title: "Fecha", key: "docDate" },
-    { title: "Hora", key: "docTime" }
+    { title: "Hora", key: "docTime" },
+    { title: "No Proforma/Factura", key: "noProformaFactura" },
+    { title: "Fecha Proforma", key: "fechaProformaFactura" },
+    { title: "Fecha Correo", key: "fechaCorreoOriginal" }
 ];
 
 const loadOptions = async () => {
-    const [docs, suppliers, users] = await Promise.all([
+    const [docs, suppliers, users, noProformas] = await Promise.all([
         api.get("/repository-documents-query/options/numero-doc"),
         api.get("/repository-documents-query/options/suppliers"),
-        api.get("/repository-documents-query/options/users")
+        api.get("/repository-documents-query/options/users"),
+        api.get("/repository-documents-query/options/no-proforma")
     ]);
 
     options.value.numeroDocs = docs.data;
     options.value.suppliers = suppliers.data;
     options.value.users = users.data;
+    options.value.noProformaFacturas = noProformas.data;
 };
 
 const search = async () => {
@@ -193,6 +235,11 @@ const refresh = () => {
     filters.value.uploadedByUsers = [];
     filters.value.dateFrom = null;
     filters.value.dateTo = null;
+    filters.value.noProformaFacturas = [];
+    filters.value.fechaProformaFrom = null;
+    filters.value.fechaProformaTo = null;
+    filters.value.fechaCorreoFrom = null;
+    filters.value.fechaCorreoTo = null;
 
     rows.value = [];
 };

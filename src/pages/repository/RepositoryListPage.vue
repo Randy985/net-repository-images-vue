@@ -1,5 +1,5 @@
 <template>
-    <v-container class="mx-auto" style="max-width: 1400px;">
+    <v-container class="mx-auto" style="max-width: 1600px;">
 
         <div class="d-flex align-center justify-space-between mb-6">
             <div class="d-flex align-center gap-3">
@@ -83,6 +83,27 @@
                     </div>
                 </template>
 
+                <template #header.noProformaFactura>
+                    <div class="th-left">
+                        <v-icon size="18" class="me-1">mdi-file-document-outline</v-icon>
+                        <strong>No. Proforma / Factura</strong>
+                    </div>
+                </template>
+
+                <template #header.fechaProformaFactura>
+                    <div class="th-left">
+                        <v-icon size="18" class="me-1">mdi-calendar-check</v-icon>
+                        <strong>Fecha Proforma / Factura</strong>
+                    </div>
+                </template>
+
+                <template #header.fechaCorreoOriginal>
+                    <div class="th-left">
+                        <v-icon size="18" class="me-1">mdi-email-outline</v-icon>
+                        <strong>Fecha Correo Original</strong>
+                    </div>
+                </template>
+
                 <template #header.filePath>
                     <div class="th-left">
                         <v-icon size="18" class="me-1">mdi-file-link</v-icon>
@@ -105,6 +126,18 @@
                 <!-- ===== USERNAME ===== -->
                 <template #item.documentUser="{ item }">
                     {{ item._raw.documentUser || "—" }}
+                </template>
+
+                <template #item.fechaProformaFactura="{ item }">
+                    {{ item._raw.fechaProformaFactura
+                        ? new Date(item._raw.fechaProformaFactura).toISOString().slice(0, 10)
+                        : "—" }}
+                </template>
+
+                <template #item.fechaCorreoOriginal="{ item }">
+                    {{ item._raw.fechaCorreoOriginal
+                        ? new Date(item._raw.fechaCorreoOriginal).toISOString().slice(0, 10)
+                        : "—" }}
                 </template>
 
                 <!-- ===== FILE / URL ===== -->
@@ -191,6 +224,9 @@ const headers = [
     { title: "Descripción", key: "description" },
     { title: "Fecha", key: "docDate" },
     { title: "Hora", key: "docTime" },
+    { title: "No. Proforma / Factura", key: "noProformaFactura" },
+    { title: "Fecha Proforma / Factura", key: "fechaProformaFactura" },
+    { title: "Fecha Correo Original", key: "fechaCorreoOriginal" },
     { title: "Archivo / URL", key: "filePath" },
     { title: "Acciones", key: "actions", sortable: false }
 ];

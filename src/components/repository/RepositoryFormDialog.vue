@@ -1,11 +1,11 @@
 <template>
     <v-dialog v-model="internalOpen" max-width="900">
         <v-card rounded="xl">
-          <v-card-title class="py-4 px-6">
-    <span class="text-h6 font-weight-bold">
-        {{ props.editing ? "Editar Registro" : "Nuevo Registro" }}
-    </span>
-</v-card-title>
+            <v-card-title class="py-4 px-6">
+                <span class="text-h6 font-weight-bold">
+                    {{ props.editing ? "Editar Registro" : "Nuevo Registro" }}
+                </span>
+            </v-card-title>
 
 
             <v-divider />
@@ -19,28 +19,34 @@
                         <v-form @submit.prevent="submit">
 
                             <v-text-field v-model="form.numeroDoc" label="Número de Documento" variant="outlined"
-                                :error="!!errors.numeroDoc" :error-messages="errors.numeroDoc" :readonly="!!props.editing" class="mb-3" />
+                                :error="!!errors.numeroDoc" :error-messages="errors.numeroDoc"
+                                :readonly="!!props.editing" class="mb-3" />
 
                             <v-text-field v-model="form.supplierId" label="Proveedor ID" variant="outlined"
-                                :error="!!errors.supplierId" :error-messages="errors.supplierId" :readonly="!!props.editing" class="mb-3" />
+                                :error="!!errors.supplierId" :error-messages="errors.supplierId"
+                                :readonly="!!props.editing" class="mb-3" />
 
                             <v-text-field v-model="form.nameSupplier" label="Nombre del Proveedor" variant="outlined"
-                                :error="!!errors.nameSupplier" :error-messages="errors.nameSupplier" :readonly="!!props.editing" class="mb-3" />
+                                :error="!!errors.nameSupplier" :error-messages="errors.nameSupplier"
+                                :readonly="!!props.editing" class="mb-3" />
 
                             <v-text-field v-model="form.documentUser" label="Usuario" variant="outlined"
-                                :error="!!errors.documentUser" :error-messages="errors.documentUser" :readonly="!!props.editing" class="mb-3" />
+                                :error="!!errors.documentUser" :error-messages="errors.documentUser"
+                                :readonly="!!props.editing" class="mb-3" />
 
                             <v-text-field v-model="form.description" label="Descripción" variant="outlined"
-                                :error="!!errors.description" :error-messages="errors.description" :readonly="!!props.editing" class="mb-3" />
+                                :error="!!errors.description" :error-messages="errors.description"
+                                :readonly="!!props.editing" class="mb-3" />
 
                             <v-row>
                                 <v-col>
-                                    <v-text-field type="date" v-model="form.docDate" label="Fecha" :readonly="!!props.editing" variant="outlined" />
+                                    <v-text-field type="date" v-model="form.docDate" label="Fecha"
+                                        :readonly="!!props.editing" variant="outlined" />
                                 </v-col>
 
                                 <v-col>
-                                    <v-text-field v-model="form.docTime" label="Hora" placeholder="HH:mm" :readonly="!!props.editing"
-                                        variant="outlined" />
+                                    <v-text-field v-model="form.docTime" label="Hora" placeholder="HH:mm"
+                                        :readonly="!!props.editing" variant="outlined" />
                                 </v-col>
                             </v-row>
 
@@ -52,6 +58,17 @@
                                 class="mb-3"
                                 @input="updatePreview"
                                 /> -->
+
+                            <template v-if="props.editing">
+                                <v-text-field v-model="form.noProformaFactura" label="No. Proforma / Factura"
+                                    variant="outlined" class="mb-3" />
+
+                                <v-text-field type="date" v-model="form.fechaProformaFactura"
+                                    label="Fecha Proforma / Factura" variant="outlined" class="mb-3" />
+
+                                <v-text-field type="date" v-model="form.fechaCorreoOriginal"
+                                    label="Fecha Correo Original" variant="outlined" class="mb-3" />
+                            </template>
 
                             <v-file-input v-model="file" label="Subir Archivo (opcional)" variant="outlined"
                                 prepend-icon="mdi-paperclip" accept=".jpg,.jpeg,.png,.pdf" @change="updatePreview" />
@@ -137,7 +154,10 @@ const form = ref({
     description: "",
     docDate: now.toISOString().slice(0, 10),
     docTime: now.toTimeString().slice(0, 5),
-    externalUrl: ""
+    externalUrl: "",
+    noProformaFactura: "",
+    fechaProformaFactura: "",
+    fechaCorreoOriginal: "",
 });
 
 const file = ref<File | null>(null);
@@ -160,7 +180,10 @@ const resetForm = () => {
         description: "",
         docDate: now.toISOString().slice(0, 10),
         docTime: now.toTimeString().slice(0, 5),
-        externalUrl: ""
+        externalUrl: "",
+        noProformaFactura: "",
+        fechaProformaFactura: "",
+        fechaCorreoOriginal: "",
     };
 
     file.value = null;
@@ -181,7 +204,15 @@ watch(() => props.editing, val => {
         description: val.description,
         docDate: val.docDate,
         docTime: val.docTime,
-        externalUrl: val.externalUrl || ""
+        externalUrl: val.externalUrl || "",
+        noProformaFactura: val.noProformaFactura || "",
+        fechaProformaFactura: val.fechaProformaFactura
+            ? val.fechaProformaFactura.slice(0, 10)
+            : "",
+        fechaCorreoOriginal: val.fechaCorreoOriginal
+            ? val.fechaCorreoOriginal.slice(0, 10)
+            : "",
+
     };
 
     // URL externa
